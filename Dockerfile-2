@@ -1,0 +1,10 @@
+FROM amazonlinux
+WORKDIR /opt
+RUN yum update -y && yum install git -y && amazon-linux-extras install java-openjdk11 && yum install maven -y
+RUN git clone https://github.com/ElevenDevOps/elevenDevOps_ProjectCode.git && cd elevenDevOps_ProjectCode && mvn clean package && ls -lrt target
+
+#below FROM instruction will set new base image & discards old base image(amazonlinux) but files generated can be copied to new tomme base images
+
+FROM tomee
+COPY --from=0  /opt/elevenDevOps_ProjectCode/target/maven-web-application.war /usr/local/tomee/webapps/
+EXPOSE 8080
